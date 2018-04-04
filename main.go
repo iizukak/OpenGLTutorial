@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/go-gl/gl/v3.2-core/gl"
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -24,8 +24,8 @@ func main() {
 
 	defer glfw.Terminate()
 
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 2)
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
@@ -40,7 +40,10 @@ func main() {
 	if err := gl.Init(); err != nil {
 		panic(err)
 	}
-	fmt.Println("OpenGL version", gl.GoStr(gl.GetString(gl.VERSION)))
+
+	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
+	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
+	fmt.Println("GLFW version:\t", glfw.GetVersionString())
 
 	glfw.SwapInterval(1)
 
