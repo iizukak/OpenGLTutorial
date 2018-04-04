@@ -7,30 +7,12 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"strings"
+	"os"
+	"bufio"
 )
 
 const windowWidth = 600
 const windowHeight = 480
-
-// TODO: ファイルから読み込むようにする
-var vertexShader = `
-#version 150 core
-in vec4 position;
-void main()
-{
-	gl_Position = position;
-}
-` + "\x00"
-
-var fragmentShader = `
-#version 150 core
-out vec4 fragment;
-void main()
-{
-	fragment = vec4(0.0, 1.0, 0.0, 1.0);
-}
-` + "\x00"
-
 
 func init() {
 	// This is needed to arrange that main() runs on main thread.
@@ -69,6 +51,8 @@ func main() {
 	glfw.SwapInterval(1)
 
 	// Configure the vertex and fragment shaders
+	var vertexShader = readFile("./point.vert")
+	var fragmentShader = readFile("./point.frag")
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
 		panic(err)
@@ -146,4 +130,25 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 	}
 
 	return shader, nil
+}
+
+func readFile(path string) string {
+	// ファイルを読み出し用にオープン
+	file, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	var out string
+	for scanner.Scan() {
+		out += scanner.Text()
+		out += "\n"
+	}
+
+	out += "\x00"
+
+	return out
 }
