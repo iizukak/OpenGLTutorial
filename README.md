@@ -23,8 +23,7 @@ OS は macOS 10.13 、Go 1.10.1 で動作確認を行っています。
 テキストの各チャプタに対応するコードは `chapter_n` のリポジトリの中に入っています。例えば 4 章のサンプルコードは、
 
 ```
-$ cd chapter_4
-$ go run main.go
+$ go run chapter_4/main.go
 ```
 
 のように実行してください。
