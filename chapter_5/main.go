@@ -16,8 +16,8 @@ const windowHeight = 480
 
 var points = []float32{
 	-0.5, -0.5,
-	0.5, 0.5,
 	0.5, -0.5,
+	0.5, 0.5,
 	-0.5, 0.5,
 }
 
@@ -75,6 +75,9 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, len(points) * 4, gl.Ptr(points), gl.STATIC_DRAW)
 	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
 	gl.EnableVertexAttribArray(0)
+
+	defer gl.DeleteBuffers(1, &vao)
+	defer gl.DeleteBuffers(1, &vbo)
 
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
