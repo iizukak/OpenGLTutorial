@@ -39,23 +39,10 @@ func main() {
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 
-	// make an application window
-	window, err := glfw.CreateWindow(windowWidth, windowHeight, "Hello", nil, nil)
-	if err != nil {
-		panic(err)
-	}
-	window.MakeContextCurrent()
-
-	// init gl
-	if err := gl.Init(); err != nil {
-		panic(err)
-	}
-
-	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
-	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
-	fmt.Println("GLFW version:\t", glfw.GetVersionString())
-
-	glfw.SwapInterval(1)
+	var window = new(glfwWindow)
+	window.width = windowWidth
+	window.height = windowHeight
+	window.init()
 
 	// Configure the vertex and fragment shaders
 	var vertexShader = readFile("./chapter_6/point.vert")
@@ -81,7 +68,7 @@ func main() {
 
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
-	for !window.ShouldClose() {
+	for !window.window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 
 		gl.UseProgram(program)
@@ -89,7 +76,7 @@ func main() {
 		gl.BindVertexArray(vao)
 		gl.DrawArrays(gl.LINE_LOOP, 0,4 )
 
-		window.SwapBuffers()
+		window.window.SwapBuffers()
 		glfw.PollEvents()
 	}
 }
