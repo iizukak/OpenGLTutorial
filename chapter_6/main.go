@@ -28,28 +28,8 @@ func init() {
 }
 
 func main() {
-	if err := glfw.Init(); err != nil {
-		panic(err)
-	}
-
+	window := initGlfw(windowWidth, windowHeight)
 	defer glfw.Terminate()
-
-	glfw.WindowHint(glfw.ContextVersionMajor, 4)
-	glfw.WindowHint(glfw.ContextVersionMinor, 1)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-
-	// make an application window
-	window, err := glfw.CreateWindow(windowWidth, windowHeight, "Hello", nil, nil)
-	if err != nil {
-		panic(err)
-	}
-	window.MakeContextCurrent()
-
-	// init gl
-	if err := gl.Init(); err != nil {
-		panic(err)
-	}
 
 	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
 	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
@@ -175,4 +155,29 @@ func readFile(path string) string {
 	out += "\x00"
 
 	return out
+}
+
+func initGlfw(width, height int) *glfw.Window {
+	if err := glfw.Init(); err != nil {
+		panic(err)
+	}
+
+	glfw.WindowHint(glfw.ContextVersionMajor, 4)
+	glfw.WindowHint(glfw.ContextVersionMinor, 1)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+
+	// make an application window
+	window, err := glfw.CreateWindow(width, height, "Hello", nil, nil)
+	if err != nil {
+		panic(err)
+	}
+	window.MakeContextCurrent()
+
+	// init gl
+	if err := gl.Init(); err != nil {
+		panic(err)
+	}
+
+	return window
 }
