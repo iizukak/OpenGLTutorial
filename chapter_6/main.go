@@ -38,26 +38,15 @@ func main() {
 	glfw.SwapInterval(1)
 
 	// Configure the vertex and fragment shaders
-	var vertexShader = readFile("./chapter_5/point.vert")
-	var fragmentShader = readFile("./chapter_5/point.frag")
+	var vertexShader = readFile("./chapter_6/point.vert")
+	var fragmentShader = readFile("./chapter_6/point.frag")
 	program, err := newProgram(vertexShader, fragmentShader)
 	if err != nil {
 		panic(err)
 	}
 
-	var vao, vbo uint32
-
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, len(points) * 4, gl.Ptr(points), gl.STATIC_DRAW)
-	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, gl.PtrOffset(0))
-	gl.EnableVertexAttribArray(0)
-
+	vao := makeVao(points)
 	defer gl.DeleteBuffers(1, &vao)
-	defer gl.DeleteBuffers(1, &vbo)
 
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
@@ -180,4 +169,20 @@ func initGlfw(width, height int) *glfw.Window {
 	}
 
 	return window
+}
+
+func makeVao(points []float32) uint32 {
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
+
+	var vao uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.BindVertexArray(vao)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, nil)
+
+	return vao
 }
