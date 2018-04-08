@@ -35,8 +35,6 @@ func main() {
 	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 	fmt.Println("GLFW version:\t", glfw.GetVersionString())
 
-	glfw.SwapInterval(1)
-
 	// Configure the vertex and fragment shaders
 	var vertexShader = readFile("./chapter_6/point.vert")
 	var fragmentShader = readFile("./chapter_6/point.frag")
@@ -51,15 +49,7 @@ func main() {
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
 	for !window.ShouldClose() {
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-
-		gl.UseProgram(program)
-
-		gl.BindVertexArray(vao)
-		gl.DrawArrays(gl.LINE_LOOP, 0,4 )
-
-		window.SwapBuffers()
-		glfw.PollEvents()
+		draw(vao, window, program)
 	}
 }
 
@@ -168,6 +158,8 @@ func initGlfw(width, height int) *glfw.Window {
 		panic(err)
 	}
 
+	glfw.SwapInterval(1)
+
 	return window
 }
 
@@ -185,4 +177,15 @@ func makeVao(points []float32) uint32 {
 	gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, nil)
 
 	return vao
+}
+
+func draw(vao uint32, window *glfw.Window, program uint32) {
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gl.UseProgram(program)
+
+	gl.BindVertexArray(vao)
+	gl.DrawArrays(gl.LINE_LOOP, 0,4 )
+
+	glfw.PollEvents()
+	window.SwapBuffers()
 }
