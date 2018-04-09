@@ -13,6 +13,7 @@ import (
 
 const windowWidth = 600
 const windowHeight = 480
+var aspect = float32(windowWidth) / float32(windowHeight)
 
 var points = []float32{
 	-0.5, -0.5,
@@ -40,6 +41,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	var aspectLock = gl.GetUniformLocation(program, gl.Str("aspect\x00"))
 
 	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
 	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
@@ -52,6 +54,7 @@ func main() {
 
 	for !window.ShouldClose() {
 		draw(vao, window, program)
+		gl.Uniform1f(aspectLock, aspect)
 	}
 }
 
@@ -194,4 +197,5 @@ func resize(w *glfw.Window, width, height int) {
 	// int -> int32 の強制キャストが発生する。大丈夫？
 	gl.Viewport(0, 0, int32(width), int32(height))
 	// fmt.Printf("resize called. width: %d, height: %d\n", int32(width), int32(height))
+	aspect = float32(width) / float32(height)
 }
