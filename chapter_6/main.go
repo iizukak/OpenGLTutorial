@@ -29,7 +29,9 @@ func init() {
 
 func main() {
 	window := initGlfw(windowWidth, windowHeight)
+	window.SetSizeCallback(resize)
 	defer glfw.Terminate()
+	defer window.Destroy()
 
 	// Configure the vertex and fragment shaders
 	var vertexShader = readFile("./chapter_6/point.vert")
@@ -186,4 +188,10 @@ func draw(vao uint32, window *glfw.Window, program uint32) {
 
 	glfw.PollEvents()
 	window.SwapBuffers()
+}
+
+func resize(w *glfw.Window, width, height int) {
+	// int -> int32 の強制キャストが発生する。大丈夫？
+	gl.Viewport(0, 0, int32(width), int32(height))
+	// fmt.Printf("resize called. width: %d, height: %d\n", int32(width), int32(height))
 }
