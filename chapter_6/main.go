@@ -31,10 +31,6 @@ func main() {
 	window := initGlfw(windowWidth, windowHeight)
 	defer glfw.Terminate()
 
-	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
-	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
-	fmt.Println("GLFW version:\t", glfw.GetVersionString())
-
 	// Configure the vertex and fragment shaders
 	var vertexShader = readFile("./chapter_6/point.vert")
 	var fragmentShader = readFile("./chapter_6/point.frag")
@@ -42,6 +38,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
+	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
+	fmt.Println("GLFW version:\t", glfw.GetVersionString())
 
 	vao := makeVao(points)
 	defer gl.DeleteBuffers(1, &vao)
@@ -54,6 +54,10 @@ func main() {
 }
 
 func newProgram(vertexShaderSource, fragmentShaderSource string) (uint32, error) {
+	if err := gl.Init(); err != nil {
+		panic(err)
+	}
+
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
 		return 0, err
@@ -152,12 +156,6 @@ func initGlfw(width, height int) *glfw.Window {
 		panic(err)
 	}
 	window.MakeContextCurrent()
-
-	// init gl
-	if err := gl.Init(); err != nil {
-		panic(err)
-	}
-
 	glfw.SwapInterval(1)
 
 	return window
