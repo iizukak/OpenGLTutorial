@@ -53,8 +53,8 @@ func main() {
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
 
 	for !window.ShouldClose() {
-		draw(vao, window, program)
 		gl.Uniform1f(aspectLock, aspect)
+		draw(vao, window, program)
 	}
 }
 
