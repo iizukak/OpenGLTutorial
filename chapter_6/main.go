@@ -47,10 +47,18 @@ func main() {
 	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 	fmt.Println("GLFW version:\t", glfw.GetVersionString())
 
+	fmt.Println("\naspect: ", aspect)
+
+	w, h := window.GetSize()
+	fw, fh := window.GetFramebufferSize()
+	fmt.Printf("width: %d, height: %d\n", w, h)
+	fmt.Printf("frame buffer width: %d, frame buffer height: %d\n", fw, fh)
+
 	vao := makeVao(points)
 	defer gl.DeleteBuffers(1, &vao)
 
 	gl.ClearColor(1.0, 1.0, 1.0, 1.0)
+	gl.Viewport(0, 0, int32(fw), int32(fh))
 
 	for !window.ShouldClose() {
 		gl.Uniform1f(aspectLock, aspect)
@@ -194,8 +202,10 @@ func draw(vao uint32, window *glfw.Window, program uint32) {
 }
 
 func resize(w *glfw.Window, width, height int) {
-	// int -> int32 の強制キャストが発生する。大丈夫？
-	gl.Viewport(0, 0, int32(width), int32(height))
-	// fmt.Printf("resize called. width: %d, height: %d\n", int32(width), int32(height))
+	// Retina Display must use FrameBufferSize
+	fw, fh := w.GetFramebufferSize()
+	gl.Viewport(0, 0, int32(fw), int32(fh))
+
+	// fmt.Printf("resize called. width: %d, height: %d, aspect: %f\n", int32(width), int32(height), aspect)
 	aspect = float32(width) / float32(height)
 }
