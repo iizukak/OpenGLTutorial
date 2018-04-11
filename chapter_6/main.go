@@ -13,7 +13,10 @@ import (
 
 const windowWidth = 600
 const windowHeight = 480
+
 var aspect = float32(windowWidth) / float32(windowHeight)
+var scale float32 = 100.0
+var size = [2]float32{float32(windowWidth), float32(windowHeight)}
 
 var points = []float32{
 	-0.5, -0.5,
@@ -42,15 +45,16 @@ func main() {
 		panic(err)
 	}
 	var aspectLock = gl.GetUniformLocation(program, gl.Str("aspect\x00"))
+	var sizeLock = gl.GetUniformLocation(program, gl.Str("size\x00"))
+	var scaleLock = gl.GetUniformLocation(program, gl.Str("scale\x00"))
 
 	fmt.Println("OpenGL version:\t", gl.GoStr(gl.GetString(gl.VERSION)))
 	fmt.Println("GLSL version:\t", gl.GoStr(gl.GetString(gl.SHADING_LANGUAGE_VERSION)))
 	fmt.Println("GLFW version:\t", glfw.GetVersionString())
 
-	fmt.Println("\naspect: ", aspect)
-
 	w, h := window.GetSize()
 	fw, fh := window.GetFramebufferSize()
+	fmt.Println("aspect ratio: ", aspect)
 	fmt.Printf("width: %d, height: %d\n", w, h)
 	fmt.Printf("frame buffer width: %d, frame buffer height: %d\n", fw, fh)
 
@@ -62,6 +66,11 @@ func main() {
 
 	for !window.ShouldClose() {
 		gl.Uniform1f(aspectLock, aspect)
+
+		fw, fh := window.GetFramebufferSize()
+		gl.Uniform2f(sizeLock, float32(fw), float32(fh))
+		gl.Uniform1f(scaleLock, scale)
+
 		draw(vao, window, program)
 	}
 }
@@ -205,6 +214,8 @@ func resize(w *glfw.Window, width, height int) {
 	// Retina Display must use FrameBufferSize
 	fw, fh := w.GetFramebufferSize()
 	gl.Viewport(0, 0, int32(fw), int32(fh))
+	size[0] = float32(fw)
+	size[1] = float32(fh)
 
 	// fmt.Printf("resize called. width: %d, height: %d, aspect: %f\n", int32(width), int32(height), aspect)
 	aspect = float32(width) / float32(height)
