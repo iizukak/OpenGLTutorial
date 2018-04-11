@@ -66,10 +66,10 @@ func main() {
 
 	for !window.ShouldClose() {
 		gl.Uniform1f(aspectLock, aspect)
-
-		fw, fh := window.GetFramebufferSize()
-		gl.Uniform2f(sizeLock, float32(fw), float32(fh))
 		gl.Uniform1f(scaleLock, scale)
+
+		fw, fh := window.GetSize()
+		gl.Uniform2f(sizeLock, float32(fw), float32(fh))
 
 		draw(vao, window, program)
 	}
@@ -214,9 +214,6 @@ func resize(w *glfw.Window, width, height int) {
 	// Retina Display must use FrameBufferSize
 	fw, fh := w.GetFramebufferSize()
 	gl.Viewport(0, 0, int32(fw), int32(fh))
-	size[0] = float32(fw)
-	size[1] = float32(fh)
-
 	// fmt.Printf("resize called. width: %d, height: %d, aspect: %f\n", int32(width), int32(height), aspect)
 	aspect = float32(width) / float32(height)
 }
